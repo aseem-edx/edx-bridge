@@ -42,12 +42,8 @@ contract EdexaTokenPool is WmbApp {
         uint256 fromChainId
     );
 
-    constructor(
-        address _admin,
-        address _wmbGateway,
-        address _poolToken
-    ) WmbApp() {
-        initialize(_admin, _wmbGateway);
+    constructor(address _wmbGateway, address _poolToken) WmbApp() {
+        initialize(msg.sender, _wmbGateway);
         poolToken = _poolToken;
     }
 
