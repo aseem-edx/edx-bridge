@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract EdexaTokenPool is WmbApp {
     using SafeERC20 for IERC20;
     address public poolToken;
-    uint256 public targetChainId;
 
     // chain id => remote pool address
     mapping(uint => address) public remotePools;
@@ -54,32 +53,28 @@ contract EdexaTokenPool is WmbApp {
         remotePools[_chainId] = _remotePool;
     }
 
-    function configTargetChainId(
-        uint256 _chainId
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        targetChainId = _chainId;
-    }
-
-    function crossTo(address _to, uint256 _amount) public payable {
-        uint256 toChainId = targetChainId;
-
+    function crossTo(
+        uint256 _toChainId,
+        address _to,
+        uint256 _amount
+    ) public payable {
         require(
-            remotePools[toChainId] != address(0),
+            remotePools[_toChainId] != address(0),
             "remote pool not configured"
         );
 
         IERC20(poolToken).safeTransferFrom(msg.sender, address(this), _amount);
 
-        uint fee = estimateFee(toChainId, 800_000);
+        uint fee = estimateFee(_toChainId, 800_000);
 
         _dispatchMessage(
-            toChainId,
-            remotePools[toChainId],
+            _toChainId,
+            remotePools[_toChainId],
             abi.encode(msg.sender, _to, _amount, "crossTo"),
             fee
         );
 
-        emit CrossRequest(toChainId, msg.sender, _to, _amount);
+        emit CrossRequest(_toChainId, msg.sender, _to, _amount);
     }
 
     // Transfer in enough native coin for fee.
