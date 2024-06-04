@@ -42,11 +42,11 @@ contract EdexaTokenPool is WmbApp {
     );
 
     constructor(
-        address admin,
+        address _admin,
         address _wmbGateway,
         address _poolToken
     ) WmbApp() {
-        initialize(admin, _wmbGateway);
+        initialize(_admin, _wmbGateway);
         poolToken = _poolToken;
     }
 
