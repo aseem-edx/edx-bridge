@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract EdexaTokenPool is WmbApp {
     using SafeERC20 for IERC20;
     address public poolToken;
+    uint256 public targetChainId;
 
     // chain id => remote pool address
     mapping(uint => address) public remotePools;
@@ -51,66 +52,70 @@ contract EdexaTokenPool is WmbApp {
     }
 
     function configRemotePool(
-        uint256 chainId,
-        address remotePool
+        uint256 _chainId,
+        address _remotePool
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        remotePools[chainId] = remotePool;
+        remotePools[_chainId] = _remotePool;
     }
 
-    function crossTo(
-        uint256 toChainId,
-        address to,
-        uint256 amount
-    ) public payable {
+    function configTargetChainId(
+        uint256 _chainId
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        targetChainId = _chainId;
+    }
+
+    function crossTo(address _to, uint256 _amount) public payable {
+        uint256 toChainId = targetChainId;
+
         require(
             remotePools[toChainId] != address(0),
             "remote pool not configured"
         );
 
-        IERC20(poolToken).safeTransferFrom(msg.sender, address(this), amount);
+        IERC20(poolToken).safeTransferFrom(msg.sender, address(this), _amount);
 
         uint fee = estimateFee(toChainId, 800_000);
 
         _dispatchMessage(
             toChainId,
             remotePools[toChainId],
-            abi.encode(msg.sender, to, amount, "crossTo"),
+            abi.encode(msg.sender, _to, _amount, "crossTo"),
             fee
         );
 
-        emit CrossRequest(toChainId, msg.sender, to, amount);
+        emit CrossRequest(toChainId, msg.sender, _to, _amount);
     }
 
     // Transfer in enough native coin for fee.
     receive() external payable {}
 
     function _wmbReceive(
-        bytes calldata data,
+        bytes calldata _data,
         bytes32 /*messageId*/,
-        uint256 fromChainId,
-        address fromSC
+        uint256 _fromChainId,
+        address _fromSC
     ) internal override {
         (
             address fromAccount,
             address to,
             uint256 amount,
             string memory crossType
-        ) = abi.decode(data, (address, address, uint256, string));
+        ) = abi.decode(_data, (address, address, uint256, string));
         if (IERC20(poolToken).balanceOf(address(this)) >= amount) {
             IERC20(poolToken).safeTransfer(to, amount);
-            emit CrossArrive(fromChainId, fromAccount, to, amount, crossType);
+            emit CrossArrive(_fromChainId, fromAccount, to, amount, crossType);
         } else {
             if (keccak256(bytes(crossType)) == keccak256("crossTo")) {
-                uint fee = estimateFee(fromChainId, 400_000);
+                uint fee = estimateFee(_fromChainId, 400_000);
                 _dispatchMessage(
-                    fromChainId,
-                    fromSC,
+                    _fromChainId,
+                    _fromSC,
                     abi.encode(to, fromAccount, amount, "crossRevert"),
                     fee
                 );
-                emit CrossRevert(fromChainId, fromAccount, to, amount);
+                emit CrossRevert(_fromChainId, fromAccount, to, amount);
             } else {
-                revert RevertFailed(fromAccount, to, amount, fromChainId);
+                revert RevertFailed(fromAccount, to, amount, _fromChainId);
             }
         }
     }
