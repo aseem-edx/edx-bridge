@@ -11,6 +11,7 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@remix-project/remixd": "^0.6.32",
     "hardhat": "^2.22.5"
   },
   "dependencies": {
