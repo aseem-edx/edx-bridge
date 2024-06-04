@@ -9,7 +9,10 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 contract EdexaToken is ERC20, ERC20Burnable, Pausable, Ownable {
     uint256 public constant MAX_SUPPLY = 10_000_000_000 * 10 ** 18; // Maximum supply: 10 billion tokens
 
-    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) Ownable(msg.sender) {}
+    constructor(
+        string memory _name,
+        string memory _symbol
+    ) ERC20(_name, _symbol) Ownable(msg.sender) {}
 
     function mint(address to, uint256 amount) public onlyOwner {
         require(
