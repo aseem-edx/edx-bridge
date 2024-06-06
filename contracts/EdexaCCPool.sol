@@ -5,9 +5,9 @@ import "@wandevs/message/contracts/app/WmbApp.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract EdexaTokenPool is WmbApp {
+contract EdexaCCPool is WmbApp {
     using SafeERC20 for IERC20;
-    address public poolToken;
+    address public token;
 
     // chain id => remote pool address
     mapping(uint => address) public remotePools;
@@ -41,9 +41,9 @@ contract EdexaTokenPool is WmbApp {
         uint256 fromChainId
     );
 
-    constructor(address _wmbGateway, address _poolToken) WmbApp() {
+    constructor(address _wmbGateway, address _token) WmbApp() {
         initialize(msg.sender, _wmbGateway);
-        poolToken = _poolToken;
+        token = _token;
     }
 
     function configRemotePool(
@@ -63,7 +63,7 @@ contract EdexaTokenPool is WmbApp {
             "remote pool not configured"
         );
 
-        IERC20(poolToken).safeTransferFrom(msg.sender, address(this), _amount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
         uint fee = estimateFee(_toChainId, 800_000);
 
@@ -92,8 +92,8 @@ contract EdexaTokenPool is WmbApp {
             uint256 amount,
             string memory crossType
         ) = abi.decode(_data, (address, address, uint256, string));
-        if (IERC20(poolToken).balanceOf(address(this)) >= amount) {
-            IERC20(poolToken).safeTransfer(to, amount);
+        if (IERC20(token).balanceOf(address(this)) >= amount) {
+            IERC20(token).safeTransfer(to, amount);
             emit CrossArrive(_fromChainId, fromAccount, to, amount, crossType);
         } else {
             if (keccak256(bytes(crossType)) == keccak256("crossTo")) {
