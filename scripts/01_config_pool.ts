@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 const { POOL_ADDRESS, REMOTE_CHAIN_ID, REMOTE_POOL } = process.env;
 
-async function main() {
+async function configPool() {
   const edexaCCPool = await ethers.getContractAt("EdexaCCPool", POOL_ADDRESS!);
 
   const setTrustedRemotes = await edexaCCPool.setTrustedRemotes(
@@ -21,7 +21,7 @@ async function main() {
   console.log("Txn Hash:", configRemotePool.hash);
 }
 
-main()
+configPool()
   .then(() => process.exit(0))
   .catch((err) => {
     console.error(err);
