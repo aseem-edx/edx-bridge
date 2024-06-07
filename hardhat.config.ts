@@ -15,6 +15,14 @@ const config: HardhatUserConfig = {
       accounts: [TEST_PRIVATE_KEY],
       url: "https://rpc-amoy.polygon.technology",
     },
+    bscTestnet: {
+      accounts: [TEST_PRIVATE_KEY],
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+    },
+    arbitrumSepolia: {
+      accounts: [TEST_PRIVATE_KEY],
+      url: "https://sepolia-rollup.arbitrum.io/rpc",
+    },
   },
 };
 
