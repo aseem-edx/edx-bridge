@@ -17,6 +17,8 @@ async function main() {
     REMOTE_POOL!
   );
   await configRemotePool.wait();
+
+  console.log("Txn Hash:", configRemotePool.hash);
 }
 
 main()
