@@ -6,6 +6,8 @@ const { TOKEN_ADDRESS, POOL_ADDRESS, REMOTE_CHAIN_ID, REMOTE_POOL } =
 const ONE_ETHER = ethers.parseEther("1");
 
 async function sendToken() {
+  const [SIGNER] = await ethers.getSigners();
+
   const token = await ethers.getContractAt("EdexaToken", TOKEN_ADDRESS!);
   const pool = await ethers.getContractAt("EdexaCCPool", POOL_ADDRESS!);
 
@@ -15,12 +17,9 @@ async function sendToken() {
 
   const fees = await pool.estimateFee(REMOTE_CHAIN_ID!, 800000);
 
-  const crossToken = await pool.crossTo(
-    REMOTE_CHAIN_ID!,
-    REMOTE_POOL!,
-    ONE_ETHER,
-    { value: fees }
-  );
+  const crossToken = await pool.crossTo(REMOTE_CHAIN_ID!, SIGNER, ONE_ETHER, {
+    value: fees,
+  });
   await crossToken.wait();
   console.log("Txn - Cross Token:", crossToken.hash);
 }
