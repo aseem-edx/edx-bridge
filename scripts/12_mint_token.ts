@@ -9,10 +9,6 @@ async function mintToken() {
 
   const token = await ethers.getContractAt("EdexaToken", TOKEN_ADDRESS!);
 
-  const mintToPool = await token.mint(POOL_ADDRESS!, HUNDRED_ETHER);
-  await mintToPool.wait();
-  console.log("Txn - MintToPool:", mintToPool.hash);
-
   const mintToSigner = await token.mint(SIGNER, HUNDRED_ETHER);
   await mintToSigner.wait();
   console.log("Txn - MintToSigner:", mintToSigner.hash);
