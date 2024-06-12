@@ -41,9 +41,8 @@ contract EdexaCCPool is WmbApp {
         uint256 fromChainId
     );
 
-    constructor(address _wmbGateway, address _token) WmbApp() {
+    constructor(address _wmbGateway) WmbApp() {
         initialize(msg.sender, _wmbGateway);
-        token = _token;
     }
 
     function configRemotePool(
@@ -53,11 +52,16 @@ contract EdexaCCPool is WmbApp {
         remotePools[_chainId] = _remotePool;
     }
 
+    function configToken(address _token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        token = _token;
+    }
+
     function crossTo(
         uint256 _toChainId,
         address _to,
         uint256 _amount
     ) public payable {
+        require(token != address(0), "not allowed to sent token");
         require(
             remotePools[_toChainId] != address(0),
             "remote pool not configured"
@@ -92,8 +96,8 @@ contract EdexaCCPool is WmbApp {
             uint256 amount,
             string memory crossType
         ) = abi.decode(_data, (address, address, uint256, string));
-        if (IERC20(token).balanceOf(address(this)) >= amount) {
-            IERC20(token).safeTransfer(to, amount);
+        if (address(this).balance >= amount) {
+            payable(to).transfer(amount);
             emit CrossArrive(_fromChainId, fromAccount, to, amount, crossType);
         } else {
             if (keccak256(bytes(crossType)) == keccak256("crossTo")) {
