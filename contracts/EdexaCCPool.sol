@@ -41,15 +41,19 @@ contract EdexaCCPool is WmbApp {
         uint256 fromChainId
     );
 
-    constructor(address _wmbGateway) WmbApp() {
-        initialize(msg.sender, _wmbGateway);
-    }
+    constructor() WmbApp() {}
 
     function configRemotePool(
         uint256 _chainId,
         address _remotePool
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         remotePools[_chainId] = _remotePool;
+    }
+
+    function configGateway(
+        address _wmbGateway
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        initialize(msg.sender, _wmbGateway);
     }
 
     function configToken(address _token) external onlyRole(DEFAULT_ADMIN_ROLE) {
