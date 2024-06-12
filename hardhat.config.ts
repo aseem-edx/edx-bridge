@@ -5,7 +5,7 @@ import "dotenv/config";
 const TEST_PRIVATE_KEY = vars.get("TEST_PRIVATE_KEY");
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.24",
+  solidity: "0.8.18",
   networks: {
     edexaTestnet: {
       accounts: [TEST_PRIVATE_KEY],
