@@ -1,13 +1,24 @@
-# Sample Hardhat Project
+# EDX Bridge
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+Bridging of EDX token back to edeXa network. This is achieved by using Wanchain Bridge Message.
 
-Try running some of the following tasks:
+## Tech Stack
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
+- Hardhat
+
+## Directories & Files
+
+1. **contracts**: Holds the solidity scripts for ERC20 Token and CrossChainPool.
+2. **ignition**: Holds the script for the deployment & deployed details.
+3. **scripts**: Holds the scripts for configurating pool, minting and initiate cross-chain transaction.
+4. **.env.template**: env template to be filled.
+
+## Pre-requisites
+
+- NodeJS
+- Npm
+
+## Dev Environment
+
+- NodeJS v20.14.0
+- Npm v10.7.0

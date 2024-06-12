@@ -1,6 +1,6 @@
 {
   "name": "brige-token",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +11,12 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@remix-project/remixd": "^0.6.32",
     "hardhat": "^2.22.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@wandevs/message": "^0.2.2",
+    "dotenv": "^16.4.5"
   }
 }
