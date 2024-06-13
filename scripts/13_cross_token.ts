@@ -14,10 +14,13 @@ async function crossToken() {
   await approveAmount.wait();
   console.log("Txn - Approve Amount", approveAmount.hash);
 
+  const fee = await sourcePool.estimateFee(DESTINATION_CHAIN_ID!, 800000);
+
   const crossToken = await sourcePool.crossTo(
     DESTINATION_CHAIN_ID!,
     signer,
-    ONE_WEI
+    ONE_WEI,
+    { value: fee }
   );
   await crossToken.wait();
   console.log("Txn - Cross Token", crossToken.hash);
