@@ -10,7 +10,7 @@ async function crossToken() {
   const sourcePool = await ethers.getContractAt("EdexaCCPool", SOURCE_POOL!);
   const sourceToken = await ethers.getContractAt("EdexaToken", SOURCE_TOKEN!);
 
-  const approveAmount = await sourceToken.approve(signer, ONE_WEI!);
+  const approveAmount = await sourceToken.approve(SOURCE_POOL!, ONE_WEI);
   await approveAmount.wait();
   console.log("Txn - Approve Amount", approveAmount.hash);
 
